@@ -1,6 +1,6 @@
 import Elysia from "elysia";
 
-import { postsGetDataList } from "./service";
+import { postsCreateData, postsDeleteDataById, postsGetDataById, postsGetDataList, postsUpdateDataById } from "./service";
 
 /**
  * Represents the REST API endpoint for posts.
@@ -8,4 +8,7 @@ import { postsGetDataList } from "./service";
  */
 export default new Elysia({ prefix: `/posts` })
     .get(`/`, postsGetDataList)
-    .listen(process.env.PORT || 3000);
+    .post(`/`, postsCreateData)
+    .get(`/:id`, postsGetDataById)
+    .put(`/:id`, postsUpdateDataById)
+    .delete(`/:id`, postsDeleteDataById);
