@@ -12,10 +12,10 @@ export interface Context extends BaseContext {
  * Represents a response data transfer object.
  */
 export class ResponseDTO<T> {
-    result?: T;
     error?: any;
     message?: string;
-    statusCode?: number;
+    result?: T;
+    status?: number;
     constructor(data?: Partial<ResponseDTO<T>>) {
         Object.assign(this, data);
         // parse data.error if exists to get their attributes and store them in this.error

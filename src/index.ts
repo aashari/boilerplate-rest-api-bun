@@ -23,9 +23,9 @@ function defaultMiddleware(app: Elysia) {
 
     app.onError((ctx) => {
         const parsedURL = new URL(ctx.request.url);
-        const statusCode = (ctx.error as any)?.status ? (ctx.error as any).status : (ctx.error instanceof NotFoundError ? 404 : 500);
-        console.log(`[index.ts] 😨 Got HTTP error ${statusCode} on ${ctx.request.method.toUpperCase()} ${parsedURL.pathname} => [${ctx.error}]`);
-        return new ResponseDTO({ statusCode: statusCode, error: ctx.error });
+        const status = (ctx.error as any)?.status ? (ctx.error as any).status : (ctx.error instanceof NotFoundError ? 404 : 500);
+        console.log(`[index.ts] 😨 Got HTTP error ${status} on ${ctx.request.method.toUpperCase()} ${parsedURL.pathname} => [${ctx.error}]`);
+        return new ResponseDTO({ status: status, error: ctx.error });
     });
 
     return app;
@@ -39,7 +39,7 @@ const app = new Elysia()
     .use(mongoRegister)
     .use(defaultMiddleware)
     .use(posts)
-    .get(`/`, () => new ResponseDTO({ statusCode: 200, message: `🤖 🇮🇩 hello world!` }))
+    .get(`/`, () => new ResponseDTO({ status: 200, message: `🤖 🇮🇩 hello world!` }))
     .listen(process.env.PORT || 3000);
 
 console.log(`[index.ts] 🦊 successfully started Elysia server on ${app.server?.hostname}:${app.server?.port}`);
