@@ -15,18 +15,39 @@ var connection: typeof mongoose.connection | undefined = undefined;
  */
 export async function mongoGetConnection() {
     if (connection) return connection;
-    const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/test';
-    const connectionDatabase = process.env.MONGODB_DATABASE || 'test';
-    connection = await mongoose.connect(connectionString, {
-        appName: Bun.env.SERVER_NAME,
+    
+    // Get MongoDB configuration from environment variables
+    const connectionString = Bun.env.MONGODB_URI || 'mongodb://localhost:27017';
+    const connectionDatabase = Bun.env.MONGODB_DATABASE || 'test';
+    const username = Bun.env.MONGODB_USER;
+    const password = Bun.env.MONGODB_PASSWORD;
+    
+    // Build connection options
+    const connectionOptions: mongoose.ConnectOptions = {
+        appName: Bun.env.SERVER_NAME || 'boilerplate-rest-api-bun',
         dbName: connectionDatabase,
-    }).then((response) => {
-        console.log(`[mongo.ts] 🦊 successfully connected to MONGODB`);
-        return response.connection;
-    }).catch((error) => {
-        console.warn(`[mongo.ts] 😨 failed to connect to MONGODB: ${error}`);
-        return undefined;
-    });
+    };
+    
+    // Add authentication if username and password are provided
+    if (username && password) {
+        connectionOptions.auth = {
+            username,
+            password
+        };
+    }
+    
+    console.log(`[mongo.ts] 🦊 attempting to connect to MongoDB at ${connectionString}/${connectionDatabase}`);
+    
+    connection = await mongoose.connect(connectionString, connectionOptions)
+        .then((response) => {
+            console.log(`[mongo.ts] 🦊 successfully connected to MongoDB`);
+            return response.connection;
+        })
+        .catch((error) => {
+            console.error(`[mongo.ts] 😨 failed to connect to MongoDB: ${error}`);
+            return undefined;
+        });
+        
     return connection;
 }
 

@@ -3,6 +3,7 @@ import { mongoRegister } from "./_mongo";
 import { ResponseDTO } from "./type";
 
 import posts from "./posts";
+import authors from "./authors";
 
 /**
  * Default middleware function for the Elysia application.
@@ -25,7 +26,7 @@ function defaultMiddleware(app: Elysia) {
         const parsedURL = new URL(ctx.request.url);
         const status = (ctx.error as any)?.status ? (ctx.error as any).status : (ctx.error instanceof NotFoundError ? 404 : 500);
         console.log(`[index.ts] 😨 Got HTTP error ${status} on ${ctx.request.method.toUpperCase()} ${parsedURL.pathname} => [${ctx.error}]`);
-        return new ResponseDTO({ status: status, error: ctx.error });
+        return { status: status, error: ctx.error };
     });
 
     return app;
@@ -39,7 +40,8 @@ const app = new Elysia()
     .use(mongoRegister)
     .use(defaultMiddleware)
     .use(posts)
-    .get(`/`, () => new ResponseDTO({ status: 200, message: `🤖 🇮🇩 hello world!` }))
-    .listen(process.env.PORT || 3000);
+    .use(authors)
+    .get(`/`, () => ({ status: 200, message: `🤖 🇮🇩 hello world!` }))
+    .listen(Bun.env.PORT || 3000);
 
 console.log(`[index.ts] 🦊 successfully started Elysia server on ${app.server?.hostname}:${app.server?.port}`);

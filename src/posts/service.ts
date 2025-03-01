@@ -18,10 +18,10 @@ export async function postsGetDataList(ctx: Context) {
             throw error;
         });
         const normalizedPosts = posts.map((post) => new PostDTO(post.toJSON()));
-        return new ResponseDTO({ status: 200, result: normalizedPosts });
+        return { status: 200, result: normalizedPosts };
     } catch (error) {
         console.log(`[posts/service.ts@postsGetDataList] 😨 got error: ${error}`);
-        return new ResponseDTO({ status: 500, error: error });
+        return { status: 500, error: error };
     }
 }
 
@@ -39,10 +39,10 @@ export async function postsCreateData(ctx: Context) {
         const requestBody = new PostDTO(body as any);
         const post = new Post(requestBody);
         await post.save();
-        return new ResponseDTO({ status: 200, result: post });
+        return { status: 200, result: post };
     } catch (error) {
         console.log(`[posts/service.ts@postsCreateData] 😨 got error: ${error}`);
-        return new ResponseDTO({ status: 500, error: error });
+        return { status: 500, error: error };
     }
 }
 
@@ -62,13 +62,13 @@ export async function postsGetDataById(ctx: Context) {
             throw error;
         });
         if (!post) {
-            return new ResponseDTO({ status: 404, error: `Post with id ${id} not found` });
+            return { status: 404, error: `Post with id ${id} not found` };
         }
         const normalizedPost = new PostDTO(post.toJSON());
-        return new ResponseDTO({ status: 200, result: normalizedPost });
+        return { status: 200, result: normalizedPost };
     } catch (error) {
         console.log(`[posts/service.ts@postsGetDataById] 😨 got error: ${error}`);
-        return new ResponseDTO({ status: 500, error: error });
+        return { status: 500, error: error };
     }
 }
 
@@ -92,13 +92,13 @@ export async function postsUpdateDataById(ctx: Context) {
             throw error;
         });
         if (!post) {
-            return new ResponseDTO({ status: 404, error: `Post with id ${id} not found` });
+            return { status: 404, error: `Post with id ${id} not found` };
         }
         const normalizedPost = new PostDTO(post.toJSON());
-        return new ResponseDTO({ status: 200, result: normalizedPost });
+        return { status: 200, result: normalizedPost };
     } catch (error) {
         console.log(`[posts/service.ts@postsUpdateDataById] 😨 got error: ${error}`);
-        return new ResponseDTO({ status: 500, error: error });
+        return { status: 500, error: error };
     }
 }
 
@@ -118,11 +118,11 @@ export async function postsDeleteDataById(ctx: Context) {
             throw error;
         });
         if (!post) {
-            return new ResponseDTO({ status: 404, error: `Post with id ${id} not found` });
+            return { status: 404, error: `Post with id ${id} not found` };
         }
-        return new ResponseDTO({ status: 200, result: true });
+        return { status: 200, result: true };
     } catch (error) {
         console.log(`[posts/service.ts@postsDeleteDataById] 😨 got error: ${error}`);
-        return new ResponseDTO({ status: 500, error: error });
+        return { status: 500, error: error };
     }
 }
